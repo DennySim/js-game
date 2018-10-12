@@ -57,6 +57,10 @@ class Actor {
     if (actor === this) {
       return false;
     }
+    // отрицание можно убрать, если в выражении в скобках
+    // заменить операторы на противоположные
+    // >= на < и <= на >
+    // и || заменить на &&
     return !((actor.bottom <= this.top || actor.top >= this.bottom) ||
       (actor.right <= this.left || actor.left >= this.right ));
   }
@@ -70,20 +74,25 @@ class Level {
     this.height = grid.length;
     this.status = null;
     this.finishDelay = 1;
+    // почему вы не используете тут стрелочную функцию?
     this.width = this.grid.reduce(function (length = 0, row) {
       if (row.length > length) {
               length = row.length;
             }
           return length;
+    // что за переменная length потомую вы передаёте в reduce?
     }, length)
   }
   isFinished() {
     return this.status !== null && this.finishDelay < 0;
   }
   actorAt(actor) {
+    // первая половина проверки лишняя
     if (actor === undefined || !(actor instanceof Actor)) {
       throw new Error('Объект не передан или переданный объект не вектор');
     }
+    // можно использовать сокращённую форму
+    // записи стрелочной функции (без {})
     return this.actors.find(actorInArray =>
     {return actorInArray.isIntersect(actor)});
   }
@@ -96,19 +105,28 @@ class Level {
     // определить на каких клетках находится объект
     // и проверить их на наличие препятствий
 
+    // если переменная используется 1 раз, то лучше использовать const
+    // вектор тут используется просто чтобы сложить несколько чисел,
+    // я бы обощёлся без него
     let next = nextPos.plus(size);
     if (nextPos.y < 0 || next.y < 0)  {
       return 'wall'
     }
+    // если if заканчивается на return, то else не нужен
     else if (Math.floor(next.y) > this.height - 1 ||
+      // это значение округляется несколько раз,
+      // лучше это сделать 1 раз и записать в переменную
       Math.floor(nextPos.y) > this.height - 1)  {
       return 'lava';
     }
+    // я не понимаю что тут происходит :(
     else if ((this.grid[Math.floor(next.y)].length  < next.x || next.x < 0) ||
       (this.grid[Math.floor(next.y)].length  < nextPos.x || nextPos.x < 0) )  {
       return 'wall';
     }
+    // else не нужен
     else {
+      // const
       let x1 = Math.floor(next.x);
       let x2 = Math.floor(nextPos.x);
       let y1 = Math.floor(next.y);
@@ -116,6 +134,7 @@ class Level {
       let xa = Math.max(x1, x2);
       let ya = Math.max(y1, y2);
 
+      // непонятная проверка
       if (y1 === y2) {
         if (x1 === x2) {
           if (this.grid[y1][x1] === 'lava') {
@@ -129,6 +148,9 @@ class Level {
 
       for (let y = Math.min(y1, y2); y < ya; y++) {
         for (let x = Math.min(x1, x2); x < xa; x++) {
+          // вы везде проверяете this.grid[y][x] на lava и wall
+          // если потребуется добавить ещё одно препятствие,
+          // то вам придётся переписать половину кода
           if (this.grid[y][x] === 'lava') {
             return 'lava';
           }
@@ -136,6 +158,8 @@ class Level {
             return 'wall';
           }
         }
+        // лишняя строчка, фукнция и так возвращает undefined,
+        // если не указано иное
         return undefined;
       }
     }
@@ -151,6 +175,7 @@ class Level {
     }
   }
   noMoreActors(actorType) {
+    // для проверки наличия в массиве элемента есть специальный метод
     let actorExist = true;
     for (let el of this.actors) {
       if (el.type === actorType) {
@@ -174,6 +199,7 @@ class Level {
 }
 
 class LevelParser {
+  // некорректное значение по-умолчанию
   constructor(movingObj = []) {
     this.movingObj = movingObj;
   }
@@ -190,12 +216,17 @@ class LevelParser {
   }
   createGrid(strArr) {
     let grid = [];
+    // вы обходите массив strArr чтобы преобразовать строки,
+    // а потом ещё раз обходите массив
+    // лучше сделать всё за один проход
     for (let str of strArr) {
       grid.push(str.split(''));
     }
     return grid.map(function (line) {
       for (let i = 0; i < line.length; i++) {
+        // const
         let symbol = line[i];
+        // зачем вы мутируете входные данные?
         line.splice(i, 1, this.obstacleFromSymbol(symbol));
       }
       return line;
@@ -204,11 +235,15 @@ class LevelParser {
 
   createActors(strArr) {
 
+    // const
     let actors = [];
     for (let y = 0; y < strArr.length; y++) {
       for (let x = 0; x < strArr[y].length; x++) {
         const symbol = strArr[y][x];
         const creator = this.actorFromSymbol(symbol);
+        // symbolPos можно объявить после проверки
+        // чем ближе объявлены переменные к месту
+        // их использования, тем лучше
         const symbolPos = new Vector(x, y);
         if (typeof creator === 'function') {
           const newObj = new creator(symbolPos);
@@ -232,6 +267,7 @@ class Fireball extends Actor {
     super(pos, new Vector(1, 1), speed);
   }
   getNextPosition(time = 1) {
+    // лишнее создание вектора
     return new Vector(this.speed.x, this.speed.y).times(time).plus(this.pos);
   }
   handleObstacle() {
