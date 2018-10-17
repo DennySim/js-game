@@ -9,14 +9,7 @@ class Vector {
     if (!(vector instanceof Vector)) {
       throw new Error('Можно прибавлять к вектору только вектор типа Vector');
     }
-<<<<<<< HEAD
     return new Vector(vector.x + this.x, vector.y + this.y);
-=======
-    // else тут не нужен, т.к. в if throw
-    else {
-      return new Vector(vector.x + this.x, vector.y + this.y);
-    }
->>>>>>> 659ea07b9ea14f82120776fa53bee1654281df5b
   }
   times(multiplier) {
     return new Vector(multiplier * this.x, multiplier * this.y)
@@ -60,16 +53,10 @@ class Actor {
       throw new Error('Аргумент либо не объект типа Vector, либо не задан');
     }
     if (actor === this) {
-    return false;
+      return false;
     }
-<<<<<<< HEAD
     return actor.bottom > this.top && actor.top < this.bottom &&
       actor.right > this.left && actor.left < this.right;
-=======
-    // все скобки можно убрать
-    return ((actor.bottom > this.top && actor.top < this.bottom) &&
-      (actor.right > this.left && actor.left < this.right ));
->>>>>>> 659ea07b9ea14f82120776fa53bee1654281df5b
   }
 }
 
@@ -115,16 +102,9 @@ class Level {
     const x1 = Math.floor(nextPos.x);
     const y1 = Math.floor(nextPos.y);
 
-<<<<<<< HEAD
     for (let y = y1; y < yCeil; y++) {
       for (let x = x1; x < xCeil; x++) {
         if (this.grid[y][x]) {
-=======
-     for (let y = y1; y < yCeil; y++) {
-       for (let x = x1; x < xCeil; x++) {
-          // цикл не будет рабоать
-          // (будет завершаться всегда на первой итерации)
->>>>>>> 659ea07b9ea14f82120776fa53bee1654281df5b
           return this.grid[y][x];
         } else {
           return undefined;
@@ -133,38 +113,16 @@ class Level {
     }
   }
   removeActor(actor) {
-<<<<<<< HEAD
     this.actors.splice(this.actors.indexOf(actor),1);
   }
   noMoreActors(actorType) {
     return !(this.actors.some(actor => actor.type === actorType))
 
-=======
-    // для поиска индакса объекта в массиве есть специальный метод
-    // метод будет всегда проходить по всему массиву,
-    // это можно оптимизировать
-    for (let i = 0; i < this.actors.length; i++) {
-      // не опускайте фигурные скобки
-      if (this.actors[i] === actor)
-          this.actors.splice(i,1);
-    }
-  }
-  noMoreActors(actorType) {
-    // тут лучше использовать метод, который возвращает true или false
-    return !(this.actors.find(actor => actor.type === actorType))
->>>>>>> 659ea07b9ea14f82120776fa53bee1654281df5b
   }
   playerTouched(type, touchedObj) {
     if (type === 'lava' || type === 'fireball') {
       this.status = 'lost';
-<<<<<<< HEAD
     } else if (type === 'coin') {
-=======
-    }
-    // в правилах оформления кода написано,
-    // что } и else должны быть на одной строчке
-    else if (type === 'coin') {
->>>>>>> 659ea07b9ea14f82120776fa53bee1654281df5b
       this.removeActor(touchedObj);
       if (this.noMoreActors('coin')) {
         this.status = 'won';
