@@ -9,9 +9,7 @@ class Vector {
     if (!(vector instanceof Vector)) {
       throw new Error('Можно прибавлять к вектору только вектор типа Vector');
     }
-    else {
-      return new Vector(vector.x + this.x, vector.y + this.y);
-    }
+    return new Vector(vector.x + this.x, vector.y + this.y);
   }
   times(multiplier) {
     return new Vector(multiplier * this.x, multiplier * this.y)
@@ -26,8 +24,8 @@ class Actor {
 
     [pos, size, speed].forEach((arg) => {
       if (!(arg instanceof Vector)) {
-            throw new Error('Все аргументы должны быть объект типа Vector');
-          }
+        throw new Error('Все аргументы должны быть объект типа Vector');
+      }
     });
     this.pos = pos;
     this.size = size;
@@ -55,10 +53,10 @@ class Actor {
       throw new Error('Аргумент либо не объект типа Vector, либо не задан');
     }
     if (actor === this) {
-      return false;
+    return false;
     }
-    return ((actor.bottom > this.top && actor.top < this.bottom) &&
-      (actor.right > this.left && actor.left < this.right ));
+    return actor.bottom > this.top && actor.top < this.bottom &&
+      actor.right > this.left && actor.left < this.right;
   }
 }
 
@@ -72,9 +70,9 @@ class Level {
     this.finishDelay = 1;
     this.width = this.grid.reduce((length, row) => {
       if (row.length > length) {
-            length = row.length;
-          }
-        return length;
+        length = row.length;
+      }
+      return length;
     }, 0);
   }
   isFinished() {
@@ -98,32 +96,33 @@ class Level {
     }
     if ((this.width < xCeil ||
         nextPos.x < 0) ||
-        (nextPos.y < 0)) {
-        return 'wall';
+      (nextPos.y < 0)) {
+      return 'wall';
     }
     const x1 = Math.floor(nextPos.x);
     const y1 = Math.floor(nextPos.y);
 
-     for (let y = y1; y < yCeil; y++) {
-       for (let x = x1; x < xCeil; x++) {
+    for (let y = y1; y < yCeil; y++) {
+      for (let x = x1; x < xCeil; x++) {
+        if (this.grid[y][x]) {
           return this.grid[y][x];
+        } else {
+          return undefined;
+        }
       }
     }
   }
   removeActor(actor) {
-    for (let i = 0; i < this.actors.length; i++) {
-      if (this.actors[i] === actor)
-          this.actors.splice(i,1);
-    }
+    this.actors.splice(this.actors.indexOf(actor),1);
   }
   noMoreActors(actorType) {
-    return !(this.actors.find(actor => actor.type === actorType))
+    return !(this.actors.some(actor => actor.type === actorType))
+
   }
   playerTouched(type, touchedObj) {
     if (type === 'lava' || type === 'fireball') {
       this.status = 'lost';
-    }
-    else if (type === 'coin') {
+    } else if (type === 'coin') {
       this.removeActor(touchedObj);
       if (this.noMoreActors('coin')) {
         this.status = 'won';
@@ -292,4 +291,6 @@ const actorDict = {
 
 const parser = new LevelParser(actorDict);
 runGame(schemas, parser, DOMDisplay)
-  .then(() => console.log('Вы выиграли приз!'));
+  .then(() => alert('Вы выиграли приз!'));
+
+
