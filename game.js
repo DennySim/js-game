@@ -9,6 +9,7 @@ class Vector {
     if (!(vector instanceof Vector)) {
       throw new Error('Можно прибавлять к вектору только вектор типа Vector');
     }
+    // else тут не нужен, т.к. в if throw
     else {
       return new Vector(vector.x + this.x, vector.y + this.y);
     }
@@ -57,6 +58,7 @@ class Actor {
     if (actor === this) {
       return false;
     }
+    // все скобки можно убрать
     return ((actor.bottom > this.top && actor.top < this.bottom) &&
       (actor.right > this.left && actor.left < this.right ));
   }
@@ -106,23 +108,32 @@ class Level {
 
      for (let y = y1; y < yCeil; y++) {
        for (let x = x1; x < xCeil; x++) {
+          // цикл не будет рабоать
+          // (будет завершаться всегда на первой итерации)
           return this.grid[y][x];
       }
     }
   }
   removeActor(actor) {
+    // для поиска индакса объекта в массиве есть специальный метод
+    // метод будет всегда проходить по всему массиву,
+    // это можно оптимизировать
     for (let i = 0; i < this.actors.length; i++) {
+      // не опускайте фигурные скобки
       if (this.actors[i] === actor)
           this.actors.splice(i,1);
     }
   }
   noMoreActors(actorType) {
+    // тут лучше использовать метод, который возвращает true или false
     return !(this.actors.find(actor => actor.type === actorType))
   }
   playerTouched(type, touchedObj) {
     if (type === 'lava' || type === 'fireball') {
       this.status = 'lost';
     }
+    // в правилах оформления кода написано,
+    // что } и else должны быть на одной строчке
     else if (type === 'coin') {
       this.removeActor(touchedObj);
       if (this.noMoreActors('coin')) {
