@@ -90,7 +90,7 @@ class Level {
     }
 
     const xCeil = Math.ceil(nextPos.x + size.x);
-    const yCeil = Math.floor(nextPos.y + size.y);
+    const yCeil = Math.ceil(nextPos.y + size.y);
 
     if (yCeil > this.height) {
       return 'lava';
@@ -103,17 +103,17 @@ class Level {
     const x1 = Math.floor(nextPos.x);
     const y1 = Math.floor(nextPos.y);
 
-    for (let y = y1 + 1; y <= yCeil + 1; y++) {
+    for (let y = y1; y < yCeil; y++) {
       for (let x = x1; x < xCeil; x++) {
-        if (this.grid[y][x] !== ' ' ) {
-          return this.grid[y][x];
+        const coordinate = this.grid[y][x];
+        if (coordinate !== undefined) {
+          return coordinate;
         }
       }
     }
-    return undefined;
   }
   removeActor(actor) {
-    this.actors.splice(this.actors.indexOf(actor),1);
+    this.actors.splice(this.actors.findIndex(act => act === actor), 1)
   }
   noMoreActors(actorType) {
     return !(this.actors.some(actor => actor.type === actorType))
