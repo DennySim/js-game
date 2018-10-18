@@ -106,14 +106,16 @@ class Level {
     for (let y = y1; y < yCeil; y++) {
       for (let x = x1; x < xCeil; x++) {
         const coordinate = this.grid[y][x];
-        if (coordinate !== undefined) {
+        if (coordinate) {
           return coordinate;
         }
       }
     }
   }
   removeActor(actor) {
-    this.actors.splice(this.actors.findIndex(act => act === actor), 1)
+    if (this.actors.includes(actor)) {
+      this.actors.splice(this.actors.indexOf(actor), 1)
+    }
   }
   noMoreActors(actorType) {
     return !(this.actors.some(actor => actor.type === actorType))
