@@ -113,10 +113,11 @@ class Level {
     }
   }
   removeActor(actor) {
-    if (this.actors.includes(actor)) {
+    if (this.actors.indexOf(actor) !== -1) {
       this.actors.splice(this.actors.indexOf(actor), 1)
     }
   }
+
   noMoreActors(actorType) {
     return !(this.actors.some(actor => actor.type === actorType))
 
@@ -124,7 +125,7 @@ class Level {
   playerTouched(type, touchedObj) {
     if (type === 'lava' || type === 'fireball') {
       this.status = 'lost';
-    } else if (type === 'coin') {
+    } else if (type === 'coin' && this.status !== 'lost') {
       this.removeActor(touchedObj);
       if (this.noMoreActors('coin')) {
         this.status = 'won';
