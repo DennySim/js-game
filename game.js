@@ -113,8 +113,9 @@ class Level {
     }
   }
   removeActor(actor) {
-    if (this.actors.indexOf(actor) !== -1) {
-      this.actors.splice(this.actors.indexOf(actor), 1)
+    const actorExist = this.actors.indexOf(actor);
+    if (actorExist !== -1) {
+      this.actors.splice(actorExist, 1)
     }
   }
 
@@ -123,12 +124,14 @@ class Level {
 
   }
   playerTouched(type, touchedObj) {
-    if (type === 'lava' || type === 'fireball') {
-      this.status = 'lost';
-    } else if (type === 'coin' && this.status !== 'lost') {
-      this.removeActor(touchedObj);
-      if (this.noMoreActors('coin')) {
-        this.status = 'won';
+    if (this.status === null) {
+      if (type === 'lava' || type === 'fireball') {
+        this.status = 'lost';
+      } else if (type === 'coin') {
+        this.removeActor(touchedObj);
+        if (this.noMoreActors('coin')) {
+          this.status = 'won';
+        }
       }
     }
   }
